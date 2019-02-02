@@ -6,11 +6,22 @@ import gestioneprogetto.exceptions.EmptyIdException;
 import gestioneprogetto.exceptions.NumericInputException;
 import gestioneprogetto.exceptions.ProgettoException;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * Classe principale contente tutta la parte grafica del progetto ed i relativi controlli sugli input.
@@ -41,7 +52,6 @@ public class GestioneProgetto extends javax.swing.JFrame {
         attivitaTable = new javax.swing.JTable();
         formPanel = new javax.swing.JPanel();
         idTxtField = new javax.swing.JTextField();
-        descrizioneTxtField = new javax.swing.JTextField();
         durataSpinner = new javax.swing.JSpinner();
         inputBtt = new javax.swing.JButton();
         DurataLbl = new javax.swing.JLabel();
@@ -50,20 +60,19 @@ public class GestioneProgetto extends javax.swing.JFrame {
         formPanelSeparator = new javax.swing.JSeparator();
         eliminaAttivitaCmbBox = new javax.swing.JComboBox<>();
         eliminaAttivitaBtt = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        superPanel = new javax.swing.JPanel();
-        giornidiRiposoPanel = new javax.swing.JPanel();
-        giorniDiRiposoLbl = new javax.swing.JLabel();
-        lunCheckBox = new javax.swing.JCheckBox();
-        domCheckBox = new javax.swing.JCheckBox();
-        sabCheckBox = new javax.swing.JCheckBox();
-        venCheckBox = new javax.swing.JCheckBox();
-        gioCheckBox = new javax.swing.JCheckBox();
-        merCheckBox = new javax.swing.JCheckBox();
-        marCheckBox = new javax.swing.JCheckBox();
+        inserisciAttivitaLbl = new javax.swing.JLabel();
+        eliminaAttivitaLbl = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        giornoInizioLbl = new javax.swing.JLabel();
+        giornoInizioCmbBox = new javax.swing.JComboBox<>();
+        meseInizioLbl = new javax.swing.JLabel();
+        meseInizioCmbBox = new javax.swing.JComboBox<>();
+        annoInizioLbl = new javax.swing.JLabel();
+        annoInizioCmbBox = new javax.swing.JComboBox<>();
+        dataInizioRdBtt = new javax.swing.JRadioButton();
+        dataFineRdBtt = new javax.swing.JRadioButton();
+        inizioCalcoloBtt = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JSeparator();
         giorniFerialiPanel = new javax.swing.JPanel();
         inserisciDataLbl = new javax.swing.JLabel();
         annoCmbBox = new javax.swing.JComboBox<>();
@@ -79,21 +88,21 @@ public class GestioneProgetto extends javax.swing.JFrame {
         eliminaGiornoCmbBox = new javax.swing.JComboBox<>();
         eliminaGiorniLbl = new javax.swing.JLabel();
         eliminaGiornoBtt = new javax.swing.JButton();
-        inizioProgettoPanel = new javax.swing.JPanel();
-        dataInizioRdBtt = new javax.swing.JRadioButton();
-        dataFineRdBtt = new javax.swing.JRadioButton();
-        annoInizioCmbBox = new javax.swing.JComboBox<>();
-        inizioCalcoloBtt = new javax.swing.JButton();
-        meseInizioCmbBox = new javax.swing.JComboBox<>();
-        annoInizioLbl = new javax.swing.JLabel();
-        giornoInizioCmbBox = new javax.swing.JComboBox<>();
-        meseInizioLbl = new javax.swing.JLabel();
-        giornoInizioLbl = new javax.swing.JLabel();
+        giornidiRiposoPanel = new javax.swing.JPanel();
+        giorniDiRiposoLbl = new javax.swing.JLabel();
+        lunCheckBox = new javax.swing.JCheckBox();
+        domCheckBox = new javax.swing.JCheckBox();
+        sabCheckBox = new javax.swing.JCheckBox();
+        venCheckBox = new javax.swing.JCheckBox();
+        gioCheckBox = new javax.swing.JCheckBox();
+        merCheckBox = new javax.swing.JCheckBox();
+        marCheckBox = new javax.swing.JCheckBox();
         risultatiPanel = new javax.swing.JPanel();
         durataProgettoLbl = new javax.swing.JLabel();
         dataInizioLbl = new javax.swing.JLabel();
         dataFineLbl = new javax.swing.JLabel();
         risultatiLbl = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gestione Progetto");
@@ -134,9 +143,9 @@ public class GestioneProgetto extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        attivitaTable.setSurrendersFocusOnKeystroke(true);
         jScrollPane1.setViewportView(attivitaTable);
 
-        formPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 6));
         formPanel.setEnabled(false);
         formPanel.setName(""); // NOI18N
 
@@ -152,21 +161,10 @@ public class GestioneProgetto extends javax.swing.JFrame {
             }
         });
 
-        descrizioneTxtField.setForeground(new java.awt.Color(102, 102, 102));
-        descrizioneTxtField.setText("Inserisci una descrizione");
-        descrizioneTxtField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                descrizioneTxtFieldFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                descrizioneTxtFieldFocusLost(evt);
-            }
-        });
-
         durataSpinner.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         durataSpinner.setEditor(new javax.swing.JSpinner.NumberEditor(durataSpinner, ""));
 
-        inputBtt.setText("Inserisci in tabella");
+        inputBtt.setText("Inserisci attività");
         inputBtt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputBttActionPerformed(evt);
@@ -184,148 +182,137 @@ public class GestioneProgetto extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        jLabel1.setText("Inserisci un'attività");
+        inserisciAttivitaLbl.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        inserisciAttivitaLbl.setText("Inserisci un'attività");
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        jLabel2.setText("Elimina un'attività");
+        eliminaAttivitaLbl.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        eliminaAttivitaLbl.setText("Elimina un'attività");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane3.setViewportView(jTextArea1);
+        giornoInizioLbl.setText("Giorno");
+
+        giornoInizioCmbBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
+
+        meseInizioLbl.setText("Mese");
+
+        meseInizioCmbBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "GENNAIO", "FEBBRAIO", "MARZO", "APRILE", "MAGGIO", "GIUGNO", "LUGLIO", "AGOSTO", "SETTEMBRE", "OTTOBRE", "NOVEMBRE", "DICEMBRE" }));
+        meseInizioCmbBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                meseInizioCmbBoxActionPerformed(evt);
+            }
+        });
+
+        annoInizioLbl.setText("Anno");
+
+        startFinishBttGroup.add(dataInizioRdBtt);
+        dataInizioRdBtt.setSelected(true);
+        dataInizioRdBtt.setText("Data di Inizio Progetto");
+
+        startFinishBttGroup.add(dataFineRdBtt);
+        dataFineRdBtt.setText("Data di Fine Progetto");
+
+        inizioCalcoloBtt.setText("Inizia");
+        inizioCalcoloBtt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inizioCalcoloBttActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout formPanelLayout = new javax.swing.GroupLayout(formPanel);
         formPanel.setLayout(formPanelLayout);
         formPanelLayout.setHorizontalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(formPanelSeparator)
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jSeparator2)
             .addGroup(formPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(formPanelLayout.createSequentialGroup()
-                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(predecessoriCheckBox)
-                                    .addGroup(formPanelLayout.createSequentialGroup()
-                                        .addComponent(durataSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(DurataLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(descrizioneTxtField)
-                                    .addComponent(idTxtField))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(EmptyIdLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(eliminaAttivitaBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
+                        .addComponent(predecessoriCheckBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 226, Short.MAX_VALUE)
+                        .addComponent(inputBtt))
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addComponent(idTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(EmptyIdLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addComponent(eliminaAttivitaCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(eliminaAttivitaBtt))
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addComponent(dataFineRdBtt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(inizioCalcoloBtt))
                     .addGroup(formPanelLayout.createSequentialGroup()
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(eliminaAttivitaCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(inputBtt))
+                            .addComponent(inserisciAttivitaLbl)
+                            .addComponent(eliminaAttivitaLbl)
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(durataSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(DurataLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(dataInizioRdBtt)
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(giornoInizioLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(giornoInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(meseInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(meseInizioLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(6, 6, 6)
+                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(annoInizioLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(annoInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         formPanelLayout.setVerticalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(formPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(inserisciAttivitaLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(idTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(EmptyIdLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(descrizioneTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(EmptyIdLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(idTxtField))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(durataSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(DurataLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(predecessoriCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(inputBtt)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(predecessoriCheckBox)
+                    .addComponent(inputBtt))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
-                        .addComponent(formPanelSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(eliminaAttivitaCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(61, 61, 61)
-                        .addComponent(eliminaAttivitaBtt)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(70, 70, 70))))
-        );
-
-        superPanel.setBackground(new java.awt.Color(41, 41, 45));
-
-        giorniDiRiposoLbl.setText("Giorni di Riposo");
-
-        lunCheckBox.setText("Lunedì");
-
-        domCheckBox.setSelected(true);
-        domCheckBox.setText("Domenica");
-
-        sabCheckBox.setSelected(true);
-        sabCheckBox.setText("Sabato");
-
-        venCheckBox.setText("Venerdì");
-
-        gioCheckBox.setText("Giovedì");
-
-        merCheckBox.setText("Mercoledì");
-
-        marCheckBox.setText("Martedì");
-
-        javax.swing.GroupLayout giornidiRiposoPanelLayout = new javax.swing.GroupLayout(giornidiRiposoPanel);
-        giornidiRiposoPanel.setLayout(giornidiRiposoPanelLayout);
-        giornidiRiposoPanelLayout.setHorizontalGroup(
-            giornidiRiposoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(giornidiRiposoPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(giornidiRiposoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(giorniDiRiposoLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(giornidiRiposoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(lunCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(marCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(merCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(gioCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(venCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(sabCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(domCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                .addComponent(formPanelSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(eliminaAttivitaLbl)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(eliminaAttivitaCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(eliminaAttivitaBtt))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(giornoInizioLbl)
+                    .addComponent(meseInizioLbl)
+                    .addComponent(annoInizioLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(giornoInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(meseInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(annoInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(dataInizioRdBtt)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(dataFineRdBtt)
+                    .addComponent(inizioCalcoloBtt))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        giornidiRiposoPanelLayout.setVerticalGroup(
-            giornidiRiposoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(giornidiRiposoPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(giorniDiRiposoLbl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lunCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(marCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(merCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(gioCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(venCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(sabCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(domCheckBox)
-                .addContainerGap())
         );
 
         inserisciDataLbl.setText("Inserisci qui i giorni feriali o di chiusura");
@@ -393,42 +380,103 @@ public class GestioneProgetto extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        giorniDiRiposoLbl.setText("Giorni di Riposo");
+
+        lunCheckBox.setText("Lunedì");
+
+        domCheckBox.setSelected(true);
+        domCheckBox.setText("Domenica");
+
+        sabCheckBox.setSelected(true);
+        sabCheckBox.setText("Sabato");
+
+        venCheckBox.setText("Venerdì");
+
+        gioCheckBox.setText("Giovedì");
+
+        merCheckBox.setText("Mercoledì");
+
+        marCheckBox.setText("Martedì");
+
+        javax.swing.GroupLayout giornidiRiposoPanelLayout = new javax.swing.GroupLayout(giornidiRiposoPanel);
+        giornidiRiposoPanel.setLayout(giornidiRiposoPanelLayout);
+        giornidiRiposoPanelLayout.setHorizontalGroup(
+            giornidiRiposoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(giornidiRiposoPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(giornidiRiposoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(giornidiRiposoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(lunCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(marCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(merCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(gioCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(venCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(sabCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(giorniDiRiposoLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(domCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        giornidiRiposoPanelLayout.setVerticalGroup(
+            giornidiRiposoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(giornidiRiposoPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(giorniDiRiposoLbl)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addComponent(lunCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(marCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(merCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(gioCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(venCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(sabCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(domCheckBox)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout giorniFerialiPanelLayout = new javax.swing.GroupLayout(giorniFerialiPanel);
         giorniFerialiPanel.setLayout(giorniFerialiPanelLayout);
         giorniFerialiPanelLayout.setHorizontalGroup(
             giorniFerialiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(giorniFerialiPanelLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(giornidiRiposoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(giorniFerialiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(inserisciDataLbl)
                     .addGroup(giorniFerialiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(inserisciDataFerialeBtt)
                         .addGroup(giorniFerialiPanelLayout.createSequentialGroup()
                             .addGroup(giorniFerialiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(giorniFerialiPanelLayout.createSequentialGroup()
-                                    .addComponent(giornoCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(meseCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(giorniFerialiPanelLayout.createSequentialGroup()
-                                    .addComponent(giornoLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(meseLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(6, 6, 6)
+                                .addComponent(giornoLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(giornoCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(12, 12, 12)
                             .addGroup(giorniFerialiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(annoCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(annoLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(24, 24, 24)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                                .addGroup(giorniFerialiPanelLayout.createSequentialGroup()
+                                    .addComponent(meseLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(annoLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(giorniFerialiPanelLayout.createSequentialGroup()
+                                    .addComponent(meseCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(annoCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(eliminaGiorniFerialiPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         giorniFerialiPanelLayout.setVerticalGroup(
             giorniFerialiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(eliminaGiorniFerialiPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(giorniFerialiPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(giorniFerialiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(giorniFerialiPanelLayout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(inserisciDataLbl)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(giorniFerialiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -441,93 +489,10 @@ public class GestioneProgetto extends javax.swing.JFrame {
                             .addComponent(giornoCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(meseCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(inserisciDataFerialeBtt)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2)
-                    .addComponent(eliminaGiorniFerialiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-
-        startFinishBttGroup.add(dataInizioRdBtt);
-        dataInizioRdBtt.setSelected(true);
-        dataInizioRdBtt.setText("Data di Inizio Progetto");
-
-        startFinishBttGroup.add(dataFineRdBtt);
-        dataFineRdBtt.setText("Data di Fine Progetto");
-
-        inizioCalcoloBtt.setText("Inizia");
-        inizioCalcoloBtt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inizioCalcoloBttActionPerformed(evt);
-            }
-        });
-
-        meseInizioCmbBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "GENNAIO", "FEBBRAIO", "MARZO", "APRILE", "MAGGIO", "GIUGNO", "LUGLIO", "AGOSTO", "SETTEMBRE", "OTTOBRE", "NOVEMBRE", "DICEMBRE" }));
-        meseInizioCmbBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                meseInizioCmbBoxActionPerformed(evt);
-            }
-        });
-
-        annoInizioLbl.setText("Anno");
-
-        giornoInizioCmbBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
-
-        meseInizioLbl.setText("Mese");
-
-        giornoInizioLbl.setText("Giorno");
-
-        javax.swing.GroupLayout inizioProgettoPanelLayout = new javax.swing.GroupLayout(inizioProgettoPanel);
-        inizioProgettoPanel.setLayout(inizioProgettoPanelLayout);
-        inizioProgettoPanelLayout.setHorizontalGroup(
-            inizioProgettoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(inizioProgettoPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(inizioProgettoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inizioProgettoPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(inizioCalcoloBtt))
-                    .addGroup(inizioProgettoPanelLayout.createSequentialGroup()
-                        .addGroup(inizioProgettoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(dataFineRdBtt)
-                            .addComponent(dataInizioRdBtt)
-                            .addGroup(inizioProgettoPanelLayout.createSequentialGroup()
-                                .addGroup(inizioProgettoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(inizioProgettoPanelLayout.createSequentialGroup()
-                                        .addComponent(giornoInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(meseInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(inizioProgettoPanelLayout.createSequentialGroup()
-                                        .addComponent(giornoInizioLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(meseInizioLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(inizioProgettoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(annoInizioLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(annoInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 50, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        inizioProgettoPanelLayout.setVerticalGroup(
-            inizioProgettoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(inizioProgettoPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(inizioProgettoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(giornoInizioLbl)
-                    .addComponent(meseInizioLbl)
-                    .addComponent(annoInizioLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inizioProgettoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(giornoInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(meseInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(annoInizioCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(dataInizioRdBtt)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(dataFineRdBtt)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(inizioCalcoloBtt)
-                .addContainerGap())
+                        .addComponent(inserisciDataFerialeBtt))
+                    .addComponent(giornidiRiposoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         risultatiPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -555,7 +520,7 @@ public class GestioneProgetto extends javax.swing.JFrame {
                             .addComponent(dataInizioLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(dataFineLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(risultatiLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE))
+                    .addComponent(risultatiLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         risultatiPanelLayout.setVerticalGroup(
@@ -572,31 +537,15 @@ public class GestioneProgetto extends javax.swing.JFrame {
                 .addGap(80, 80, 80))
         );
 
-        javax.swing.GroupLayout superPanelLayout = new javax.swing.GroupLayout(superPanel);
-        superPanel.setLayout(superPanelLayout);
-        superPanelLayout.setHorizontalGroup(
-            superPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(superPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(giornidiRiposoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(giorniFerialiPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inizioProgettoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(risultatiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 149, Short.MAX_VALUE)
         );
-        superPanelLayout.setVerticalGroup(
-            superPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(superPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(superPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(giornidiRiposoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(giorniFerialiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(inizioProgettoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(risultatiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 141, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -604,60 +553,65 @@ public class GestioneProgetto extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(superPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1060, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(formPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1060, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(giorniFerialiPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(72, 72, 72)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(formPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(risultatiPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(formPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(superPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(366, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(giorniFerialiPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 87, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(risultatiPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+   
+   
     /**
-     * SetTextField sulla JTextField della descrizione.
-     * @param evt L'evento quando is perde il focus.
-     */
-    private void descrizioneTxtFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_descrizioneTxtFieldFocusLost
-        SetTextField("Inserisci una descrizione", descrizioneTxtField);
-    }//GEN-LAST:event_descrizioneTxtFieldFocusLost
-    
-    /**
-     * UnsetTextField sulla JTextField della descrizione.
-     * @param evt L'evento quando is fa il focus.
-     */
-    private void descrizioneTxtFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_descrizioneTxtFieldFocusGained
-        UnsetTextField("Inserisci una descrizione", descrizioneTxtField);
-    }//GEN-LAST:event_descrizioneTxtFieldFocusGained
-    
-    /**
-     * SetTextField sulla JTextField dell'id.
+     * Metodo utilizzato per impostare il placeholder sulla JTextFIeld in cui si inserisce l'ID.
      * @param evt L'evento quando is perde il focus.
      */
     private void idTxtFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_idTxtFieldFocusLost
-        SetTextField("Inserisci l'id", idTxtField);
+        if(idTxtField.getText().isEmpty()) {
+            idTxtField.setForeground(new Color(102, 102, 102));
+            idTxtField.setText("Inserisci l'id");
+        }
     }//GEN-LAST:event_idTxtFieldFocusLost
     
     /**
-     * UnsetTextField sulla JTextField dell'id.
+     * Metodo utilizzato per togliere il placeholder sulla JTextFIeld in cui si inserisce l'ID.
      * @param evt L'evento quando is fa il focus.
      */
     private void idTxtFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_idTxtFieldFocusGained
-        UnsetTextField("Inserisci l'id", idTxtField);
+        if(idTxtField.getText().equals("Inserisci l'id") && idTxtField.getForeground().equals(new Color(102, 102, 102))) {
+            idTxtField.setText("");
+            idTxtField.setForeground(Color.BLACK);
+        }
     }//GEN-LAST:event_idTxtFieldFocusGained
     
     /**
@@ -899,7 +853,8 @@ public class GestioneProgetto extends javax.swing.JFrame {
             ex.showError();
         }
     }//GEN-LAST:event_inizioCalcoloBttActionPerformed
-    /**
+
+   /**
      * Inserisce i dati presi in input dal form di inserimento in tabella e nella hashmap del progetto.
      * @throws EmptyIdException Eccezione chiamata quando vi è un errore riguardante l'inserimento del testo nella casella di ID o di descrizione.
      * @throws NumericInputException Eccezione chiamata quando ell'inserimento dei predecessori non viene inserito un valido numero.
@@ -914,13 +869,7 @@ public class GestioneProgetto extends javax.swing.JFrame {
             throw new EmptyIdException(EmptyIdLbl, "Inserisci un ID");
         else if(calcolatore.getProgetto().containsKey(idTxtField.getText()))
             throw new EmptyIdException(EmptyIdLbl, "Esiste già un attività con questo ID");
-        String descrizione;
-        if(descrizioneTxtField.getText().equals("Inserisci una descrizione") && descrizioneTxtField.getForeground().equals(new Color(102, 102, 102)))
-            descrizione = "";
-        else
-            descrizione = descrizioneTxtField.getText();
-        if(descrizione.length() > 20)
-            throw new EmptyIdException(EmptyIdLbl, "La descrizione deve avere al massimo 10 caratteri");
+        
         int durata = (int) durataSpinner.getValue();
         ArrayList<String> predecessoriId = new ArrayList<String>();
         
@@ -959,15 +908,14 @@ public class GestioneProgetto extends javax.swing.JFrame {
             ArrayList<Attivita> predecessori = new ArrayList<Attivita>();
             for(String s : predecessoriId)
                 predecessori.add(calcolatore.getProgetto().get(s));
-            calcolatore.getProgetto().put(idTxtField.getText(), new Attivita(durata, descrizione, predecessori));
+            calcolatore.getProgetto().put(idTxtField.getText(), new Attivita(durata, predecessori));
             int i = 0;
             while(attivitaTable.getModel().getValueAt(i, 0) != null){
                 i++;
             }
             eliminaAttivitaCmbBox.addItem(idTxtField.getText());
             attivitaTable.getModel().setValueAt(idTxtField.getText(), i, 0);
-            JButton btt = new JButton("Visualizza la descrizione");
-            attivitaTable.getModel().setValueAt(btt, i, 1);
+            //attivitaTable.getModel().setValueAt(descrizione, i, 1);
             attivitaTable.getModel().setValueAt(durata, i, 2);
             String str = "";
             for(String s : predecessoriId)
@@ -1147,7 +1095,8 @@ public class GestioneProgetto extends javax.swing.JFrame {
             }
         });
     }
-
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel DurataLbl;
     private javax.swing.JLabel EmptyIdLbl;
@@ -1160,12 +1109,12 @@ public class GestioneProgetto extends javax.swing.JFrame {
     private javax.swing.JRadioButton dataFineRdBtt;
     private javax.swing.JLabel dataInizioLbl;
     private javax.swing.JRadioButton dataInizioRdBtt;
-    private javax.swing.JTextField descrizioneTxtField;
     private javax.swing.JCheckBox domCheckBox;
     private javax.swing.JLabel durataProgettoLbl;
     private javax.swing.JSpinner durataSpinner;
     private javax.swing.JButton eliminaAttivitaBtt;
     private javax.swing.JComboBox<String> eliminaAttivitaCmbBox;
+    private javax.swing.JLabel eliminaAttivitaLbl;
     private javax.swing.JPanel eliminaGiorniFerialiPanel;
     private javax.swing.JLabel eliminaGiorniLbl;
     private javax.swing.JButton eliminaGiornoBtt;
@@ -1183,16 +1132,15 @@ public class GestioneProgetto extends javax.swing.JFrame {
     private javax.swing.JLabel giornoLbl;
     private javax.swing.JTextField idTxtField;
     private javax.swing.JButton inizioCalcoloBtt;
-    private javax.swing.JPanel inizioProgettoPanel;
     private javax.swing.JButton inputBtt;
+    private javax.swing.JLabel inserisciAttivitaLbl;
     private javax.swing.JButton inserisciDataFerialeBtt;
     private javax.swing.JLabel inserisciDataLbl;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JCheckBox lunCheckBox;
     private javax.swing.JCheckBox marCheckBox;
     private javax.swing.JCheckBox merCheckBox;
@@ -1205,7 +1153,6 @@ public class GestioneProgetto extends javax.swing.JFrame {
     private javax.swing.JPanel risultatiPanel;
     private javax.swing.JCheckBox sabCheckBox;
     private javax.swing.ButtonGroup startFinishBttGroup;
-    private javax.swing.JPanel superPanel;
     private javax.swing.JCheckBox venCheckBox;
     // End of variables declaration//GEN-END:variables
 }

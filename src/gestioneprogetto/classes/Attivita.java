@@ -14,10 +14,6 @@ public class Attivita {
      */
     private int durata;
     /**
-     * Descrizione facoltativa dell'attività per esplicare in cosa consista o quali siano i suoi scopi ad esempio.
-     */
-    private String nome;
-    /**
      * Valore intero e dunque assoluto dell'Early Start nel sistema finale.
      */
     private int ES;
@@ -65,9 +61,8 @@ public class Attivita {
      * @param nome La descrizione dell'attività.
      * @param predecessori La lista delle attività che sono predecessori di quella che si sta per istanziare.
      */
-    public Attivita(int durata, String nome, ArrayList<Attivita> predecessori) {
+    public Attivita(int durata, ArrayList<Attivita> predecessori) {
         this.durata = durata;
-        this.nome = nome;
         this.ES = -1;
         this.EF = -1;
         this.LS = -1;
@@ -89,7 +84,6 @@ public class Attivita {
      */
     public Attivita(int durata, String nome) {
         this.durata = durata;
-        this.nome = nome;
         this.ES = -1;
         this.EF = -1;
         this.LS = -1;
@@ -103,7 +97,6 @@ public class Attivita {
     }
     
     public int getDurata() {return durata;}
-    public String getNome() {return nome;}
     public int getES() {return ES;}
     public int getEF() {return EF;}
     public int getLS() {return LS;}
@@ -116,7 +109,6 @@ public class Attivita {
     public ArrayList<Attivita> getPredecessori() {return predecessori;}
     
     public void setDurata(int durata) {this.durata = durata;}
-    public void setNome(String nome) {this.nome = nome;}
     public void setES(int ES) {this.ES = ES;}
     public void setEF(int EF) {this.EF = EF;}
     public void setLS(int LS) {this.LS = LS;}

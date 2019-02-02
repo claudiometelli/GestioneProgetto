@@ -240,7 +240,6 @@ public class Calcolatore {
                 if(!isFeriale && d.equals(dataAttuale))
                     isFeriale = true;
             while(giorniRiposo.contains(dataAttuale.get(GregorianCalendar.DAY_OF_WEEK)) || isFeriale){
-                System.out.println("INKIKA");
                 dataAttuale.add(GregorianCalendar.DAY_OF_MONTH, inizioFine);
                 isFeriale = false;
                 for(GregorianCalendar d : giorniFeriali)
